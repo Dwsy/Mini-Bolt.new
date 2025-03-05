@@ -5,7 +5,7 @@
 
 Mini-Bolt.new 是由一个 Mini-Bolt.new(v1)生成的智能提示词引擎和项目文件解析工具，让 Claude 为您打造完美项目，一键导出即可运行！通过简单直观的界面，您可以轻松创建、管理和导出由 AI 生成的项目。
 
-初版自举提示词：[bootstrapPrompt.md](./bootstrapPrompt.md)
+初版自举输出：[bootstrapPrompt.md](./bootstrapPrompt.md)
 
 ### 🌟 核心功能
 
