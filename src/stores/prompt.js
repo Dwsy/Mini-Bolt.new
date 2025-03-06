@@ -77,7 +77,7 @@ export const usePromptStore = defineStore("prompt", () => {
 
       // 数据相关
       data: {
-        mock: "使用MSW 2.0+进行API模拟",
+        mock: `使用MSW 2.0+进行API模拟 注意 2.0引入方式 为import { setupWorker } from 'msw/browser'`,
         real: "不要mock直接使用前端调用后端",
         prisma: "使用Prisma 5.0+,确保模型定义准确并提供seed脚本",
         sqlite: "使用SQLite 3.40+,注意其特性限制如不支持枚举类型",
