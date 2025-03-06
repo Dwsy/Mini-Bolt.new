@@ -2,37 +2,51 @@ import { defineStore } from "pinia";
 import { ref, watch } from "vue";
 
 export const useThemeStore = defineStore("theme", () => {
-  // Check system preference for dark mode
+  // 检查系统是否偏好暗色模式
   const prefersDarkScheme =
     window.matchMedia &&
     window.matchMedia("(prefers-color-scheme: dark)").matches;
-  var savedTheme = localStorage.getItem("theme");
-  savedTheme = "light"; //dark 未适配
-  // State
+
+  // 从本地存储获取用户之前设置的主题，如果没有则使用系统偏好
+  const savedTheme = localStorage.getItem("theme");
+
+  // 状态
   const isDarkTheme = ref(
     savedTheme ? savedTheme === "dark" : prefersDarkScheme
   );
 
-  // Actions
+  // 主题切换功能
   function toggleTheme() {
     isDarkTheme.value = !isDarkTheme.value;
     localStorage.setItem("theme", isDarkTheme.value ? "dark" : "light");
   }
 
-  // Listen for system theme changes
+  // 设置特定主题
+  function setTheme(theme) {
+    isDarkTheme.value = theme === "dark";
+    localStorage.setItem("theme", theme);
+  }
+
+  // 重置为系统默认主题
+  function resetToSystemTheme() {
+    localStorage.removeItem("theme");
+    isDarkTheme.value = prefersDarkScheme;
+  }
+
+  // 监听系统主题变化
   if (window.matchMedia) {
     const darkModeMediaQuery = window.matchMedia(
       "(prefers-color-scheme: dark)"
     );
     darkModeMediaQuery.addEventListener("change", (e) => {
-      // Only update if user hasn't manually set a preference
+      // 只有当用户没有手动设置偏好时才更新
       if (!localStorage.getItem("theme")) {
         isDarkTheme.value = e.matches;
       }
     });
   }
 
-  // Watch for changes to apply the theme class
+  // 监听isDarkTheme的变化以应用主题类
   watch(
     isDarkTheme,
     (newValue) => {
@@ -50,5 +64,7 @@ export const useThemeStore = defineStore("theme", () => {
   return {
     isDarkTheme,
     toggleTheme,
+    setTheme,
+    resetToSystemTheme,
   };
 });

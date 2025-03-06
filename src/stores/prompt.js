@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { ref, computed } from "vue";
+import { ref, computed, reactive } from "vue";
 import { useTemplateStore } from "./templates";
 
 export const usePromptStore = defineStore("prompt", () => {
@@ -14,6 +14,60 @@ export const usePromptStore = defineStore("prompt", () => {
   const generatedPrompt = ref("");
   const promptHistory = ref([]);
 
+  // 预设设计提示词
+  const designPrompts = ref([
+    {
+      name: "极简主义",
+      description:
+        "简约、留白、精致的设计风格，注重功能性和用户体验。使用有限的元素、简洁的排版和充足的留白空间，减少视觉噪音，突出核心内容和功能。配色方案通常采用黑白灰为主，辅以少量强调色。",
+    },
+    {
+      name: "新拟态设计",
+      description:
+        "结合光影效果的柔和UI设计，创造逼真的触感体验。通过精细的阴影和高光模拟物理世界中的凸起和凹陷，使界面元素看起来像是从背景中挤压出来或嵌入其中。常用柔和的单色背景和微妙的阴影效果，创造出舒适的视觉深度。",
+    },
+    {
+      name: "玻璃态设计",
+      description:
+        "透明磨砂效果，现代感强，适合展示层次感的界面。利用半透明背景和模糊效果创造出类似磨砂玻璃的视觉感受，元素之间可以相互透视，增强空间层次感。常配合细微的边框和光晕效果，提升精致感和现代感。",
+    },
+    {
+      name: "暗黑科技风",
+      description:
+        "深色背景配合霓虹色调，营造高科技感的界面体验。以深黑或深蓝色为基础，搭配明亮的霓虹色（如蓝色、紫色、粉色）作为强调，常使用发光效果、网格线和科技感图形元素。界面布局通常采用模块化设计，具有未来感和科幻感。",
+    },
+    {
+      name: "自然有机风",
+      description:
+        "柔和的色彩和有机形状，给人亲切自然的感觉。使用圆润的曲线、不规则形状和自然界的色彩（如绿色、棕色、蓝色等自然色调）。界面元素通常具有柔和的过渡和渐变，避免锐角和生硬的线条，营造出舒适、亲和的用户体验。",
+    },
+    {
+      name: "复古像素风",
+      description:
+        "8-bit风格的像素艺术，怀旧游戏感，独特的视觉体验。采用低分辨率的像素图形和有限的色彩palette，刻意展现像素边缘，模拟早期电子游戏的视觉风格。通常搭配复古的音效和交互方式，为用户带来怀旧的游戏化体验。",
+    },
+    {
+      name: "扁平化3D",
+      description:
+        "结合扁平设计和3D元素，现代感强且具有空间感。保持扁平设计的简洁性，同时通过微妙的阴影、透视和层次感引入3D效果。避免过度装饰，但利用空间关系和深度来增强用户界面的可理解性和视觉吸引力。",
+    },
+    {
+      name: "渐变色彩风",
+      description:
+        "丰富的渐变色彩，活力四射，适合年轻化产品。大胆使用从一种颜色过渡到另一种颜色的渐变效果，创造出充满活力和动感的视觉体验。常用于按钮、背景和装饰元素，搭配简洁的白色空间和现代化的排版，平衡整体视觉效果。",
+    },
+    {
+      name: "极客终端风",
+      description:
+        "类似命令行界面，黑底绿字，技术感极强。模拟早期计算机终端的视觉风格，通常使用等宽字体、黑色背景和亮色（绿色、白色或蓝色）文本。界面元素简洁直接，强调功能性和效率，常加入代码片段、闪烁光标和命令提示符等元素增强真实感。",
+    },
+    {
+      name: "材料设计3.0",
+      description:
+        "基于Google Material Design 3.0，动态色彩系统和精致组件。采用基于物理世界启发的设计语言，包括响应式动画、自然阴影和深思熟虑的色彩系统。新版本引入了Material You个性化设计，能根据用户壁纸自动生成协调的配色方案，并提供更丰富的组件变体和交互模式。",
+    },
+  ]);
+
   // Load history from localStorage
   try {
     const savedHistory = localStorage.getItem("mini-bolt-history");
@@ -24,156 +78,170 @@ export const usePromptStore = defineStore("prompt", () => {
     console.error("Failed to load prompt history:", error);
   }
 
+  // 步骤控制状态和方法
+  const stepControl = reactive({
+    currentStep: 1,
+    totalSteps: 4,
+    stepProgress: computed(
+      () => ((stepControl.currentStep - 1) / (stepControl.totalSteps - 1)) * 100
+    ),
+    isLastStep: computed(
+      () => stepControl.currentStep === stepControl.totalSteps
+    ),
+
+    // 步骤控制方法
+    nextStep(validation) {
+      // 如果提供了验证函数，则先验证
+      if (validation && !validation()) {
+        return false;
+      }
+
+      if (stepControl.currentStep < stepControl.totalSteps) {
+        stepControl.currentStep++;
+        return true;
+      }
+      return false;
+    },
+
+    prevStep() {
+      if (stepControl.currentStep > 1) {
+        stepControl.currentStep--;
+        return true;
+      }
+      return false;
+    },
+
+    goToStep(step) {
+      if (step >= 1 && step <= stepControl.totalSteps) {
+        stepControl.currentStep = step;
+        return true;
+      }
+      return false;
+    },
+
+    // 获取步骤标签
+    getStepLabel(step) {
+      switch (step) {
+        case 1:
+          return "基本信息";
+        case 2:
+          return "技术栈";
+        case 3:
+          return "需求描述";
+        case 4:
+          return "设计风格";
+        default:
+          return `步骤${step}`;
+      }
+    },
+
+    // 获取步骤标题
+    getStepTitle() {
+      switch (stepControl.currentStep) {
+        case 1:
+          return "步骤1：项目基本信息";
+        case 2:
+          return "步骤2：选择技术栈";
+        case 3:
+          return "步骤3：项目需求描述";
+        case 4:
+          return "步骤4：设计风格选择";
+        default:
+          return "项目配置";
+      }
+    },
+  });
+
   // Actions
   function generatePrompt(info) {
-    const templateStore = useTemplateStore();
-
-    // Store project info
+    // Store project info for potential reuse
     projectInfo.value = { ...info };
 
-    // Get all technologies
-    const allTechs = [...info.selectedTechs];
+    // Extract technologies
+    const allTechs = info.selectedTechs || [];
 
-    // Check if Next.js is included
+    // 确定是否有特定框架
     const hasNextJs = allTechs.includes("Next.js");
+    const hasVue = allTechs.includes("Vue.js") || allTechs.includes("Nuxt.js");
+    const hasReact = allTechs.includes("React") || hasNextJs;
+    const hasTailwind =
+      allTechs.includes("Tailwind") || allTechs.includes("TailwindCSS");
 
-    // Generate tech stack string
-    const techStackStr = allTechs.join("+");
+    // 生成技术栈描述
+    const techStackStr = allTechs.join(", ");
 
-    // Get theme description
-    let themeDescription = "";
-    if (info.projectTheme === "dark") {
-      themeDescription = "暗色主题模式，使界面有高级感";
-    } else if (info.projectTheme === "light") {
-      themeDescription = "亮色主题模式，使界面清爽自然";
-    } else if (info.projectTheme === "both") {
-      themeDescription = "同时支持暗色和亮色主题模式，并提供切换功能";
-    }
-    // Generate rule section based on tech stack
-    const rules = {
-      // 基础规则
-      base: {
-        code: "为了减少代码量可以抽取公共组件,函数",
-        env: "使用.env配置环境变量",
-        docs: "编写详细的readme文档",
-        version:
-          "在package.json中固定npm包的版本号(使用精确版本如^18.2.0而非~18.2.0或*),确保项目稳定性和一致性",
-        git: "添加合适的.gitignore文件",
-        lint: "配置ESLint和Prettier保证代码质量",
-      },
-
-      // 前端框架相关
-      frontend: {
-        nextjs:
-          "使用Next.js 14版本,利用App Router和React Server Components,正确处理'use client'指令",
-        react:
-          "使用React 18.2+,采用函数组件和新的Hooks(如useId,useDeferredValue),遵循React最佳实践",
-        vue: "使用Vue 3.3+和Composition API,利用<script setup>语法糖和响应式API",
-        angular: "使用Angular 17+,利用新的控制流语法和信号(Signals)API",
-        svelte: "使用Svelte 4+或SvelteKit 2+,利用其响应式特性减少模板代码",
-        config:
-          "前端代码需要返回正确的配置文件如next.config.js,tailwind.config.js,postcss.config.js,tsconfig.json,package.json等，还需要处理路径引用",
-      },
-
-      // 数据相关
-      data: {
-        mock: `使用MSW 2.0+进行API模拟 注意 2.0引入方式 为import { setupWorker } from 'msw/browser'`,
-        real: "不要mock直接使用前端调用后端",
-        prisma: "使用Prisma 5.0+,确保模型定义准确并提供seed脚本",
-        sqlite: "使用SQLite 3.40+,注意其特性限制如不支持枚举类型",
-        mongodb: "使用MongoDB 6.0+和MongoDB Node.js Driver 5.0+或Mongoose 8.0+",
-        postgresql: "使用PostgreSQL 16+和pg 8.11+,利用JSON和数组等高级特性",
-        supabase: "使用Supabase JS v2 SDK,正确配置RLS权限和实时订阅",
-        firebase: "使用Firebase v10 SDK模块化导入,遵循安全规则",
-      },
-
-      // UI相关
-      ui: {
-        tailwindCDN:
-          "如果使用Tailwind使用CDN方式而不是安装库的方式,所以不需要在postcss.config.js中配置tailwindcss",
-        daisyui: "使用daisyUI 4.0+,合理使用组件和主题系统",
-        shadcn: "使用最新的shadcn/ui组件,按需导入并自定义主题",
-        mui: "使用Material UI 5.14+,利用新的Joy UI和系统组件",
-        antd: "使用Ant Design 5.10+,利用其主题定制和国际化功能",
-        chakra: "使用Chakra UI 2.8+,利用其主题系统和响应式API",
-      },
-
-      // 状态管理
-      state: {
-        redux: "使用Redux Toolkit 2.0+,利用createSlice和RTK Query简化状态管理",
-        zustand: "使用Zustand 4.4+,合理设计store结构和中间件",
-        mobx: "使用MobX 6.10+,正确使用makeObservable和响应式原则",
-        xstate: "使用XState 5.0+,利用状态图和actor模型",
-        recoil: "使用Recoil 0.7+,设计原子化状态和选择器",
-        pinia: "使用Pinia 2.1+,遵循模块化状态管理和组合式API",
-      },
-
-      // 数据请求
-      request: {
-        axios: "使用Axios 1.6+,配置拦截器和错误处理",
-        swr: "使用SWR 2.2+,利用其缓存机制和乐观UI更新",
-        reactQuery: "使用TanStack Query v5,合理设置缓存策略和失效机制",
-        apollo: "使用Apollo Client 3.8+,优化查询性能和缓存策略",
-        rtkQuery: "使用RTK Query(Redux Toolkit 2.0+的一部分),集成到Redux应用",
-      },
-
-      // 后端技术
-      backend: {
-        nodejs: "使用Node.js 20 LTS,利用ES模块和新的API",
-        express: "使用Express 4.18+,设计RESTful API和中间件",
-        fastapi: "使用FastAPI 0.104+,利用类型提示和异步特性",
-        django: "使用Django 5.0+,遵循MTV架构模式",
-        spring: "使用Spring Boot 3.2+,利用Java 21特性",
-        laravel: "使用Laravel 10+,利用其优雅特性和数据库迁移",
-      },
-    };
-
-    let rule = [
-      rules.base.code,
-      rules.base.env,
-      rules.base.docs,
-      rules.base.version,
-      rules.base.git,
-      rules.base.lint,
+    // 基本开发规范
+    const basicRules = [
+      "为了减少代码量可以抽取公共组件,函数",
+      "使用.env配置环境变量",
+      "编写详细的readme文档",
+      "在package.json中固定npm包的版本号(使用精确版本如^18.2.0而非~18.2.0或*),确保项目稳定性和一致性",
+      "添加合适的.gitignore文件",
+      "配置ESLint和Prettier保证代码质量",
     ];
 
-    // 添加前端框架相关规则
+    // 根据技术栈添加特定规则
     if (hasNextJs) {
-      rule.push(rules.frontend.nextjs);
-      rule.push(rules.data.real);
-    } else {
-      rule.push(rules.data.mock);
-    }
-    rule.push(rules.frontend.config);
-
-    // 添加数据相关规则
-    if (allTechs.includes("Prisma")) {
-      rule.push(rules.data.prisma);
-      if (allTechs.includes("SQLite")) {
-        rule.push(rules.data.sqlite);
-      }
+      basicRules.push(
+        "使用Next.js 14+,利用App Router和React Server Components,正确处理'use client'指令"
+      );
     }
 
-    // 添加UI相关规则
-    if (allTechs.includes("TailwindCSS")) {
-      rule.push(rules.ui.tailwind);
-      rule.push(rules.ui.tailwindCDN);
+    if (hasReact) {
+      basicRules.push(
+        "使用React 18.2+,采用函数组件和新的Hooks(如useId,useDeferredValue),遵循React最佳实践"
+      );
     }
 
-    const ruleStr = rule.map((r, i) => `${i + 1}.${r}`).join("\n");
+    if (hasVue) {
+      basicRules.push(
+        "使用Vue 3.4+和Composition API,利用<script setup>语法糖和响应式API"
+      );
+    }
 
-    // Get template
-    const template = templateStore.getCurrentTemplate;
+    if (hasTailwind) {
+      basicRules.push("使用TailwindCSS最新版本,合理使用工具类和主题配置");
+    }
 
-    // Replace variables in template
-    generatedPrompt.value = templateStore.replaceTemplateVariables(template, {
+    // 格式化规则
+    const formattedRules = basicRules
+      .map((rule, index) => `${index + 1}. ${rule}`)
+      .join("\n");
+
+    // 准备变量对象
+    const variables = {
       projectName: info.projectName,
-      techStackStr,
+      techStackStr: techStackStr,
+      requirements: info.requirements || "",
+      themeDescription: info.themeDescription || "",
+      rule: formattedRules,
+      hasNextJs: hasNextJs,
+      designStyle: info.designStyle || "",
+      designDescription: info.themeDescription || "",
+    };
+
+    // 从templates store获取当前模板并填充变量
+    const templateStore = useTemplateStore();
+    const currentTemplate = templateStore.getCurrentTemplate;
+
+    // 使用模板替换变量
+    const finalPrompt = templateStore.replaceTemplateVariables(
+      currentTemplate,
+      variables
+    );
+
+    generatedPrompt.value = finalPrompt;
+
+    // Update projectInfo
+    projectInfo.value = {
+      projectName: info.projectName,
+      selectedTechs: allTechs,
       requirements: info.requirements,
-      themeDescription,
-      hasNextJs,
-      rule: ruleStr,
-    });
+      themeDescription: info.themeDescription,
+      bestPractices: info.bestPractices || [],
+      rule: formattedRules,
+      isMvpMode: info.isMvpMode || false,
+    };
 
     // Add to history
     addToHistory(info.projectName, generatedPrompt.value);
@@ -238,6 +306,28 @@ export const usePromptStore = defineStore("prompt", () => {
     }
   }
 
+  // 获取设计提示词列表
+  function getDesignPrompts() {
+    return designPrompts.value;
+  }
+
+  // 根据名称获取设计提示词
+  function getDesignPromptByName(name) {
+    return designPrompts.value.find((prompt) => prompt.name === name);
+  }
+
+  // 获取主题描述
+  function getThemeDescription(theme) {
+    if (theme === "dark") {
+      return "暗色主题模式，使界面有高级感";
+    } else if (theme === "light") {
+      return "亮色主题模式，使界面清爽自然";
+    } else if (theme === "both") {
+      return "同时支持暗色和亮色主题模式，并提供切换功能";
+    }
+    return "";
+  }
+
   return {
     projectInfo,
     generatedPrompt,
@@ -248,5 +338,10 @@ export const usePromptStore = defineStore("prompt", () => {
     clearHistory,
     removeHistoryItem,
     useHistoryPrompt,
+    designPrompts,
+    getDesignPrompts,
+    getDesignPromptByName,
+    getThemeDescription,
+    stepControl,
   };
 });

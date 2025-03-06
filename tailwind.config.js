@@ -82,16 +82,17 @@ module.exports = {
         },
         dark: {
           ...require("daisyui/src/theming/themes")["dark"],
-          primary: "#818CF8", // 更亮更柔和的靛蓝色
-          secondary: "#C4B5FD", // 更柔和的紫色
-          accent: "#FCD34D", // 明亮温暖的黄色
-          neutral: "#1F2937", // 更自然的深灰色
-          "base-100": "#111827", // 更自然的深色背景
-          "base-200": "#0D1520", // 稍深的背景色
-          "base-300": "#0A1018", // 更深的背景色，但不太黑
-          "neutral-content": "#E5E7EB", // 更柔和的文字颜色
-          "--rounded-box": "0.5rem", // 圆角更自然
-          "--rounded-btn": "0.375rem", // 按钮圆角更协调
+          // 苹果风格暗色模式颜色
+          primary: "#0A84FF", // 苹果iOS蓝色
+          secondary: "#64D2FF", // 苹果风格的辅助蓝色
+          accent: "#FF9F0A", // 苹果风格的橙色
+          neutral: "#1C1C1E", // 苹果风格的暗灰背景
+          "base-100": "#000000", // 真黑色背景
+          "base-200": "#1C1C1E", // 一级深色背景
+          "base-300": "#2C2C2E", // 二级深色背景
+          "neutral-content": "#F2F2F7", // 苹果风格的文本颜色
+          "--rounded-box": "0.5rem", // 更符合iOS的圆角
+          "--rounded-btn": "0.375rem", // 更符合iOS的按钮圆角
         },
       },
     ],

@@ -278,6 +278,38 @@ export const useTechStackStore = defineStore("techStack", () => {
         "Prisma",
         "SQLite",
       ],
+      bestPractices: [
+        "使用React Server Components减少客户端JavaScript体积",
+        "遵循Next.js页面和数据获取最佳实践（App Router）",
+        "组件设计遵循SOLID原则，特别是单一职责",
+        "使用TypeScript严格模式提高代码质量",
+        "数据持久化逻辑与UI逻辑严格分离",
+        "使用Prisma迁移功能管理数据库架构",
+        "实现增量静态再生成(ISR)提高性能",
+        "使用React Context和useReducer管理全局状态",
+      ],
+    },
+    {
+      name: "React前端开发",
+      icon: "react/react-original.svg",
+      description: "React + JavaScript + Redux + Material UI",
+      techs: [
+        "React",
+        "JavaScript",
+        "Redux",
+        "Material-UI",
+        "Axios",
+        "React Query",
+      ],
+      bestPractices: [
+        "使用函数组件和Hooks代替类组件",
+        "使用懒加载(React.lazy)和代码分割优化性能",
+        "实现合适的状态管理策略，避免prop drilling",
+        "创建可复用的自定义Hooks封装逻辑",
+        "使用memo、useCallback和useMemo优化渲染性能",
+        "采用组件驱动开发方法，从小组件开始构建",
+        "使用ESLint和Prettier保持代码质量和一致性",
+      ],
     },
     {
       name: "Vue现代应用",
@@ -291,36 +323,79 @@ export const useTechStackStore = defineStore("techStack", () => {
         "Pinia",
         "Axios",
       ],
+      bestPractices: [
+        "使用组合式API和<script setup>语法简化组件",
+        "使用defineProps和defineEmits进行组件通信",
+        "按功能组织目录结构而非按类型",
+        "在响应式数据声明中使用解构会丢失响应性，应避免",
+        "使用Pinia代替Vuex管理状态，利用其模块化设计",
+        "使用Vue Router的动态导入实现代码分割",
+        "应用Axios拦截器统一处理请求和响应",
+        "组件使用宏命令definePage定义路由元信息",
+      ],
     },
     {
       name: "MERN技术栈",
       icon: "mongodb/mongodb-original.svg",
       description: "MongoDB + Express + React + Node.js",
-      techs: ["MongoDB", "Express", "React", "Node.js", "JavaScript"],
+      techs: ["MongoDB", "Express", "React", "Node.js", "Redux Toolkit"],
+      bestPractices: [
+        "使用JWT实现身份验证和授权",
+        "采用MVC架构组织Express后端代码",
+        "MongoDB集合设计时考虑数据内嵌与引用的取舍",
+        "实现API请求的错误处理中间件",
+        "使用Redux Toolkit简化状态管理",
+        "前后端分离部署，允许独立扩展",
+        "使用环境变量管理敏感配置",
+        "实现React懒加载和React.memo优化性能",
+      ],
     },
     {
-      name: "Jamstack应用",
-      icon: "nextjs/nextjs-original.svg",
-      description: "Next.js + TailwindCSS + Supabase",
-      techs: ["Next.js", "TailwindCSS", "Supabase", "TypeScript"],
+      name: "LAMP传统架构",
+      icon: "php/php-original.svg",
+      description: "Linux + Apache + MySQL + PHP/Laravel",
+      techs: ["PHP", "MySQL", "Laravel", "jQuery", "Bootstrap"],
+      bestPractices: [
+        "使用Laravel的Eloquent ORM避免SQL注入",
+        "实现Laravel中间件处理认证和授权",
+        "应用Laravel Blade模板引擎减少重复代码",
+        "使用Laravel Mix简化资源编译",
+        "实现Laravel队列处理耗时任务",
+        "使用事件和监听器解耦业务逻辑",
+        "应用Laravel Passport或Sanctum处理API认证",
+        "实现Laravel数据库迁移和种子文件",
+      ],
     },
     {
-      name: "独立开发React",
-      icon: "react/react-original.svg",
-      description: "React + TypeScript + TailwindCSS + Vite",
-      techs: ["React", "TypeScript", "TailwindCSS", "Vite", "SWR", "daisyui"],
-    },
-    {
-      name: "Python Web应用",
+      name: "Python Web开发",
       icon: "python/python-original.svg",
-      description: "Python + FastAPI + SQLite + React",
-      techs: ["Python", "FastAPI", "SQLite", "React", "TailwindCSS"],
+      description: "Python + Django/FastAPI + PostgreSQL",
+      techs: ["Python", "Django", "PostgreSQL", "Bootstrap"],
+      bestPractices: [
+        "遵循Django MTV架构模式",
+        "使用Django ORM处理数据库操作",
+        "实现Django表单验证和CSRF保护",
+        "应用Django模板继承减少重复代码",
+        "使用Django信号实现事件驱动编程",
+        "实现Django中间件处理请求和响应",
+        "正确配置Django静态文件和媒体文件处理",
+      ],
     },
     {
       name: "移动优先应用",
       icon: "tailwindcss/tailwindcss-original.svg",
       description: "React + TailwindCSS + React Query + Firebase",
       techs: ["React", "TailwindCSS", "React Query", "Firebase", "TypeScript"],
+      bestPractices: [
+        "实现响应式设计，优先考虑移动端用户体验",
+        "使用移动端手势操作库提升交互体验",
+        "优化应用资源加载，减少首屏加载时间",
+        "实现渐进式Web应用(PWA)功能，支持离线访问",
+        "使用Firebase实时数据库实现即时通讯功能",
+        "实现懒加载和图片优化，减少移动端流量消耗",
+        "针对不同设备尺寸进行布局优化和测试",
+        "使用React Query管理远程状态和API缓存策略",
+      ],
     },
     {
       name: "Vue3企业应用",
@@ -333,6 +408,14 @@ export const useTechStackStore = defineStore("techStack", () => {
         "Pinia",
         "Axios",
         "Node.js",
+      ],
+      bestPractices: [
+        "使用TypeScript接口定义组件props和状态类型",
+        "采用基于文件的路由系统和懒加载优化首屏加载",
+        "实现微前端架构，支持大型团队协作开发",
+        "使用Pinia模块化管理复杂状态，实现持久化存储",
+        "封装Element Plus组件，创建符合企业设计规范的组件库",
+        "构建完善的权限控制系统，包括菜单、按钮和API权限",
       ],
     },
   ];
@@ -392,9 +475,29 @@ export const useTechStackStore = defineStore("techStack", () => {
     const combination = techStackCombinations.find(
       (combo) => combo.name === combinationName
     );
-    if (!combination) return [];
 
-    return combination.techs;
+    if (combination) {
+      // 打开包含这些技术的分类
+      techCategories.value.forEach((category, index) => {
+        const hasTech = category.techs.some((tech) =>
+          combination.techs.includes(tech)
+        );
+        if (hasTech) {
+          category.expanded = true;
+        }
+      });
+
+      // 返回技术栈列表和最佳实践
+      return {
+        techs: [...combination.techs],
+        bestPractices: combination.bestPractices || [],
+      };
+    }
+
+    return {
+      techs: [],
+      bestPractices: [],
+    };
   }
 
   return {

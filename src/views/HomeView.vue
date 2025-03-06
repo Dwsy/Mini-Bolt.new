@@ -84,7 +84,7 @@ const handleNavigateToTab = (tabId) => {
       <div class="grid grid-cols-1 xl:grid-cols-5 gap-6">
         <!-- 左侧面板 - 项目配置 -->
         <div class="xl:col-span-2">
-          <ConfigPanel />
+          <ConfigPanel @navigate-to-tab="handleNavigateToTab" />
         </div>
 
         <!-- 右侧面板 - 主要内容 -->

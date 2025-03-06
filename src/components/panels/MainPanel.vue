@@ -401,17 +401,17 @@ const parseCode = async () => {
         <!-- 合并后的文件浏览器 -->
         <div
           v-if="activeTab === 'files_preview'"
-          class="grid grid-cols-12 gap-4"
+          class="grid grid-cols-12 gap-4 h-[600px]"
         >
           <!-- 左侧文件结构 -->
           <div
-            class="col-span-4 border-r border-gray-200 dark:border-gray-700 pr-4"
+            class="col-span-4 border-r border-gray-200 dark:border-gray-700 pr-4 h-full overflow-y-auto"
           >
             <FilesPanel @select-file="fileStore.selectFile($event)" />
           </div>
 
           <!-- 右侧文件预览 -->
-          <div class="col-span-8">
+          <div class="col-span-8 h-full overflow-y-auto">
             <FilePreviewPanel @preview-markdown="handlePreviewMarkdown" />
           </div>
         </div>
@@ -442,5 +442,28 @@ const parseCode = async () => {
 .hide-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* 添加滚动条样式 */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 4px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.dark .overflow-y-auto::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.dark .overflow-y-auto::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
 }
 </style>

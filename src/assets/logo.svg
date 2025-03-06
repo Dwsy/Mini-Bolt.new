@@ -1,10 +1,20 @@
-<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="200" height="200" rx="20" fill="#111827"/>
-  <path d="M67.5 40L50 70H85L67.5 40Z" fill="#6366F1"/>
-  <path d="M110 40L92.5 70H127.5L110 40Z" fill="#8B5CF6"/>
-  <path d="M152.5 40L135 70H170L152.5 40Z" fill="#EC4899"/>
-  <rect x="50" y="80" width="120" height="35" rx="5" fill="#6366F1"/>
-  <rect x="50" y="125" width="120" height="35" rx="5" fill="#8B5CF6"/>
-  <path d="M40 82.5C40 78.9101 42.9101 76 46.5 76C50.0899 76 53 78.9101 53 82.5V157.5C53 161.09 50.0899 164 46.5 164C42.9101 164 40 161.09 40 157.5V82.5Z" fill="#EC4899"/>
-  <path d="M167 82.5C167 78.9101 169.91 76 173.5 76C177.09 76 180 78.9101 180 82.5V157.5C180 161.09 177.09 164 173.5 164C169.91 164 167 161.09 167 157.5V82.5Z" fill="#EC4899"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 40 40">
+  <!-- 渐变背景 -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" /> <!-- primary 颜色 -->
+      <stop offset="100%" stop-color="#8B5CF6" /> <!-- secondary 颜色 -->
+    </linearGradient>
+  </defs>
+  
+  <!-- 圆角矩形背景 -->
+  <rect x="0" y="0" width="40" height="40" rx="10" fill="url(#gradient)" />
+  
+  <!-- 闪电图标 -->
+  <path
+    d="M21.3 11.046A1 1 0 0122 12v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 0118 28v-5h-4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
+    fill="white"
+    fill-rule="evenodd"
+    clip-rule="evenodd"
+  />
 </svg>
