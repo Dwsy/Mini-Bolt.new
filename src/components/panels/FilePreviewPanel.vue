@@ -20,6 +20,11 @@ const currentFileType = ref("");
 // Computed properties
 const selectedFile = computed(() => fileStore.selectedFile);
 
+const totalLines = computed(() => {
+  if (!selectedFile.value?.content) return 0;
+  return selectedFile.value.content.split("\n").length;
+});
+
 // 高亮处理后的内容
 const highlightedContent = computed(() => {
   if (!selectedFile.value?.content) return "";
@@ -33,6 +38,10 @@ const highlightedContent = computed(() => {
   const language = getLanguageFromFileType(fileExtension);
 
   // 调用highlighter进行高亮处理
+  // We need to preserve line breaks, so we'll highlight line by line
+  // and then join them with <br> tags.
+  // However, the highlighter already returns HTML with <pre> which preserves line breaks.
+  // The main issue is that the current display splits lines and highlighter is not used.
   return highlighter.highlight(selectedFile.value.content, language);
 });
 
@@ -96,6 +105,9 @@ const openMarkdownPreview = () => {
             />
             {{ getLanguage(selectedFile.fileName) }}
           </span>
+          <span class="badge badge-outline text-xs px-2 py-1">
+            {{ totalLines }} lines
+          </span>
 
           <!-- Markdown预览按钮 -->
           <button
@@ -150,21 +162,12 @@ const openMarkdownPreview = () => {
       >
         <!-- 文件内容展示区域，带有高亮 -->
 
-        <table class="w-full">
-          <tbody>
-            <tr
-              v-for="(line, index) in selectedFile.content.split('\n')"
-              :key="index"
-            >
-              <td
-                class="text-right pr-3 select-none text-gray-500 dark:text-gray-400 border-r border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 w-[50px] px-2"
-              >
-                {{ index + 1 }}
-              </td>
-              <td class="pl-4 font-mono whitespace-pre">{{ line }}</td>
-            </tr>
-          </tbody>
-        </table>
+        <!-- 文件内容展示区域，带有高亮 -->
+        <!-- The highlighter returns HTML wrapped in a <pre> tag, which handles line breaks and formatting. -->
+        <div v-if="highlightedContent" v-html="highlightedContent"></div>
+        <div v-else-if="selectedFile && selectedFile.content" class="whitespace-pre-wrap font-mono text-sm p-4">
+          {{ selectedFile.content }} <!-- Fallback for no highlighting -->
+        </div>
       </div>
     </div>
 

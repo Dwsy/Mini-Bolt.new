@@ -60,6 +60,12 @@ export const useTemplateStore = defineStore("templates", () => {
       example:
         "1.后端代码\n2.使用mock数据\n3.为了减少代码量可以抽取公共组件,函数",
     },
+    {
+      name: "customSections",
+      type: "文本",
+      description: "用户自定义的提示词部分或规则",
+      example: "例如：请确保所有组件都有单元测试。\\n代码风格遵循Airbnb。",
+    },
   ]);
 
   // Default templates
@@ -69,20 +75,22 @@ export const useTemplateStore = defineStore("templates", () => {
       description: "默认的提示词模板，适用于大多数项目",
       content: `忽略前面的上下文
 ---
-你是一位资深全栈工程师，使用\${techStackStr} 设计一个\${projectName}。
-** 请注意不要mock直接使用实际代码编写，图片可以使用unslash **
-请您模拟产品经理提出需求和信息架构，请自己构思好功能需求和界面，然后设计输出。
+你是一位资深全栈工程师，将使用 \${techStackStr} 技术栈来设计和实现一个名为 “\${projectName}” 的项目。
+**请注意：请直接编写实际代码，不要使用mock数据。图片服务请使用 Unsplash (https://unsplash.com) 提供的图片。**
+你需要模拟产品经理的角色，首先进行需求分析和信息架构设计，然后构思具体的功能模块和用户界面，最后输出完整的设计和代码。
 ----
-rule:
+项目规则 (请严格遵守):
 \${rule}
+\${customSections}
 ----
-功能：\${requirements}
-主题：\${themeDescription}
+核心功能需求：\${requirements}
+项目主题风格：\${themeDescription}
+设计风格参考：\${designStyle} - \${designDescription}
 
-请按照以下格式回答输出前端工程化多文件，以便我能够自动生成相应的文件和目录结构：
-* 所有内容都输出到自定义的代码块中而不是使用markdown *
+请按照以下格式输出一个包含多个文件的工程化项目，以便我能够自动解析并生成相应的文件和目录结构：
+* 重要：所有指定输出的内容（项目名称定义、文件代码）都必须严格包含在下述的自定义代码块中，不要在代码块之外添加任何Markdown格式或其他描述性文字。*
 
-## 首先，可以选择性地定义项目名称（作为顶层目录）
+## 第一步：定义项目名称（作为顶层目录，可选）
 
 \`\`\`generateInfo id=generateInfo1
 {
@@ -90,22 +98,31 @@ rule:
 }
 \`\`\`
 
-## 然后，对于每个需要生成的文件，请使用以下格式：
+## 第二步：输出每个文件的内容
+
+对于项目中需要生成的每一个文件，请使用以下格式进行输出。一个文件一个代码块，确保包含完整的文件路径和文件名。
 
 \`\`\`{fileName:"文件名",filePath:"文件路径"}
 文件内容
 \`\`\`
 
-## 格式说明
+## 输出格式详细说明
 
-1. \`projectName\` 是可选的，如果提供，将作为顶层目录
-2. \`fileName\` 是必需的，指定文件名（包括扩展名）
-3. \`filePath\` 是必需的，指定文件相对路径（可以包含多级目录）
-4. 除此之外不要输出任何内容,项目生成信息可以放入generateInfo.md文件中
-5. 编写完整的readme.md文件
-6. 注意转译字符
+1.  **项目名称定义 (generateInfo)**:
+    *   使用 \`generateInfo\` 代码块定义项目名称。
+    *   \`projectName\` 字段的值即为项目的根目录名。这是可选的。
+2.  **文件内容定义 ({fileName, filePath})**:
+    *   每个文件都必须使用独立的 \`\`\`{fileName:"...",filePath:"..."}\`\`\` 代码块包裹。
+    *   \`fileName\`: 字符串类型，必需，指定文件名，包含正确的扩展名 (例如："index.html", "App.vue", "styles.css")。
+    *   \`filePath\`: 字符串类型，必需，指定文件相对于项目根目录的路径 (例如："src/components", "public", ".")。使用"."表示文件位于根目录。
+    *   代码块内部即为该文件的完整内容。
+3.  **通用规则**:
+    *   严格遵循上述代码块格式，不要在代码块的起始和结束标记前后添加任何额外字符。
+    *   确保文件内容中的特殊字符 (例如 \` \` \` , \`{\`, \`}\`) 根据需要进行转义，以避免解析错误。
+    *   务必为项目编写一个内容详尽的 \`README.md\` 文件，放在项目根目录下，清晰说明项目的设置、启动步骤和各项功能。
+    *   除了 \`generateInfo\` 和文件代码块之外，不要输出任何其他内容。
 
-## 示例
+## 示例输出
 
 以下是一个符合要求的回答示例：
 
@@ -132,26 +149,37 @@ print("这是主应用文件")
       description: "简化版提示词模板，移除了一些复杂细节",
       content: `忽略前面的上下文
 ---
-你是一位资深前端工程师，使用\${techStackStr} 设计一个\${projectName}。
+你是一位经验丰富的前端工程师，将使用 \${techStackStr} 技术栈为我构建一个名为 “\${projectName}” 的项目。
 
-请基于以下需求完成项目：
-- 功能：\${requirements}
-- 主题风格：\${themeDescription}
-- \${hasNextJs ? '需要完整的前后端实现' : '使用前端模拟数据，不需要实现后端'}
+**项目核心需求如下：**
+- 主要功能：\${requirements}
+- 视觉主题：\${themeDescription}
+- 设计风格：\${designStyle} (\${designDescription})
+- 后端处理：\${hasNextJs ? '需要对接真实后端接口（请你一并实现简单的后端部分）' : '使用前端模拟数据或mock API，无需实现后端逻辑'}
+\${customSections}
 
-请按照以下格式回答输出前端工程化多文件：
+**输出要求：**
+请严格按照以下指定的格式输出一个包含多个文件的工程化项目。这将帮助我自动解析并生成对应的文件和目录结构。
 
+## 1. 定义项目名称 (可选)
+如果需要将所有文件组织在一个顶层项目目录中，请使用此代码块：
 \`\`\`generateInfo id=generateInfo1
 {
 "projectName":"\${projectName}"
 }
 \`\`\`
 
-\`\`\`{fileName:"文件名",filePath:"文件路径"}
-文件内容
+## 2. 输出各文件的具体内容
+针对项目中的每一个文件，请使用如下格式独立包裹其内容：
+\`\`\`{fileName:"文件名.扩展名",filePath:"相对路径"}
+文件的完整代码内容...
 \`\`\`
 
-确保代码结构清晰，有详细的README.md文件说明项目用法，并正确处理各组件之间的关系。
+**重要提示：**
+- 请确保 \`fileName\` 包含正确的文件扩展名，\`filePath\` 为相对于项目根目录的路径。
+- 编写一个清晰、详尽的 \`README.md\` 文件，说明如何配置、启动项目以及各项功能的使用方法。
+- 除了上述指定的代码块格式外，请不要添加任何额外的解释性文本或Markdown标记。
+- 注意代码中特殊字符的转义，以确保解析正确。
 `,
     },
   ]);
@@ -338,6 +366,10 @@ print("这是主应用文件")
 
     if (variables.rule) {
       result = result.replace(/\${rule}/g, variables.rule);
+    }
+
+    if (variables.customSections) {
+      result = result.replace(/\${customSections}/g, variables.customSections);
     }
 
     return result;

@@ -262,6 +262,68 @@ export const useTechStackStore = defineStore("techStack", () => {
       icon: "laravel/laravel-plain.svg",
       description: "PHP Web应用框架",
     },
+    NestJS: {
+      category: "后端技术",
+      icon: "nestjs/nestjs-plain.svg",
+      description: "构建高效、可扩展的Node.js服务器端应用的框架",
+    },
+
+    // DevOps工具
+    Docker: {
+      category: "DevOps工具",
+      icon: "docker/docker-original.svg",
+      description: "应用容器化平台",
+    },
+    "GitHub Actions": {
+      category: "CI/CD",
+      icon: "githubactions/githubactions-original.svg",
+      description: "GitHub内置的CI/CD工具",
+    },
+
+    // Web服务器
+    Nginx: {
+      category: "Web服务器",
+      icon: "nginx/nginx-original.svg",
+      description: "高性能Web服务器和反向代理服务器",
+    },
+    Uvicorn: {
+      category: "Web服务器",
+      icon: "python/python-original.svg", // No specific Uvicorn icon on devicon
+      description: "ASGI服务器，常用于FastAPI等Python异步框架",
+    },
+    
+    // 数据库 (เพิ่มเติม)
+    Redis: {
+      category: "数据库",
+      icon: "redis/redis-original.svg",
+      description: "内存数据结构存储，用作数据库、缓存和消息代理",
+    },
+
+    // 测试工具
+    Jest: {
+      category: "测试工具",
+      icon: "jest/jest-plain.svg",
+      description: "流行的JavaScript测试框架，专注于简洁性",
+    },
+    Playwright: {
+      category: "测试工具",
+      icon: "playwright/playwright-original.svg",
+      description: "微软开发的端到端测试框架，支持多浏览器",
+    },
+
+    // 构建工具
+    Vite: {
+      category: "构建工具",
+      icon: "vitejs/vitejs-original.svg",
+      description: "下一代前端构建工具，提供极速的冷启动和热模块替换（HMR）",
+    },
+
+    // 消息队列
+    RabbitMQ: {
+      category: "消息队列",
+      icon: "rabbitmq/rabbitmq-original.svg",
+      description: "流行的开源消息代理，实现了AMQP协议",
+    },
   };
 
   // 技术栈组合配置
@@ -418,6 +480,91 @@ export const useTechStackStore = defineStore("techStack", () => {
         "构建完善的权限控制系统，包括菜单、按钮和API权限",
       ],
     },
+    {
+      name: "纯前端 - Vue SPA",
+      icon: "vuejs/vuejs-original.svg",
+      description: "Vue.js (v3) + TypeScript + Pinia + Vue Router + Vite + TailwindCSS",
+      techs: [
+        "Vue.js",
+        "TypeScript",
+        "Pinia",
+        "Axios", // For API calls
+        "TailwindCSS",
+        "Vite",
+        "Jest", // For unit testing
+      ],
+      bestPractices: [
+        "使用组合式API (<script setup>) 组织代码逻辑，增强可读性和复用性。",
+        "通过Vue Router (v4) 实现模块化和懒加载的路由，优化初始加载速度。",
+        "使用Pinia进行状态管理，确保模块化、类型安全和良好的DevTools支持。",
+        "利用Vite的快速冷启动和HMR (Hot Module Replacement) 进行高效开发。",
+        "组件设计遵循单一职责原则 (SRP) 和高内聚低耦合，提高可维护性和可复用性。",
+        "为重要的业务逻辑和组件编写单元测试 (e.g., using Vitest or Jest)。",
+        "使用TailwindCSS构建一致且响应式的用户界面，配合PurgeCSS优化生产构建体积。",
+        "定义清晰的API服务层，统一处理HTTP请求和响应 (e.g., using Axios instances)。",
+        "遵循Vue.js官方推荐的风格指南，确保代码一致性。",
+        "利用TypeScript的强类型系统减少运行时错误。",
+      ],
+    },
+    {
+      name: "全栈 - FastAPI + Svelte",
+      icon: "python/python-original.svg",
+      description: "FastAPI (Python) + Svelte (TypeScript) + PostgreSQL + Docker + Nginx",
+      techs: [
+        "Python",
+        "FastAPI",
+        "Svelte",
+        "TypeScript",
+        "PostgreSQL",
+        "Docker",
+        "Nginx",
+        "Uvicorn",
+        "Vite", // For Svelte frontend
+        "Playwright", // For E2E testing
+      ],
+      bestPractices: [
+        "使用Pydantic模型进行FastAPI的数据验证、序列化和自动生成API文档。",
+        "通过Docker容器化前端和后端应用，使用Docker Compose编排本地开发环境，简化部署。",
+        "使用Nginx作为反向代理、负载均衡器和静态文件服务器。",
+        "Svelte前端项目使用Vite进行构建和开发，利用其高效的HMR和tree-shaking。",
+        "数据库操作使用异步ORM (e.g., SQLAlchemy async or databases library with encode/databases)。",
+        "API设计遵循RESTful或GraphQL原则，提供清晰、一致的接口。",
+        "前后端代码库分离，通过CI/CD流程 (e.g., GitHub Actions) 自动化构建、测试和部署。",
+        "考虑使用Alembic进行PostgreSQL数据库模式迁移管理。",
+        "实现全面的API测试，包括单元测试、集成测试和端到端测试 (e.g., Pytest for backend, Playwright for E2E)。",
+        "实施日志记录和监控策略，例如使用ELK栈或Prometheus/Grafana。",
+        "FastAPI应用部署时使用Uvicorn配合Gunicorn进行生产环境管理。",
+      ],
+    },
+    {
+      name: "后端 - Node.js Microservice (NestJS)",
+      icon: "nestjs/nestjs-plain.svg",
+      description: "NestJS (Node.js/TypeScript) + MongoDB + Docker + RabbitMQ for event-driven architecture",
+      techs: [
+        "Node.js",
+        "TypeScript",
+        "NestJS",
+        "MongoDB",
+        "Docker",
+        "RabbitMQ",
+        "Jest", // For unit and integration testing
+        "Nginx", // As API Gateway or reverse proxy
+      ],
+      bestPractices: [
+        "遵循NestJS的模块化架构，按领域或功能组织微服务。",
+        "使用TypeScript实现类型安全，并利用装饰器简化代码。",
+        "通过DTOs (Data Transfer Objects) 和 class-validator/class-transformer 进行API输入输出验证和转换。",
+        "集成Mongoose与MongoDB进行数据持久化，定义清晰的Schema。",
+        "使用RabbitMQ等消息队列进行服务间异步通信和事件驱动设计。",
+        "编写全面的单元测试、集成测试和契约测试 (e.g., using Jest, Supertest, Pact)。",
+        "通过Docker容器化微服务，使用Kubernetes或Docker Swarm进行编排和扩展。",
+        "使用Helmet等库增强应用安全性，配置CORS策略。",
+        "配置结构化日志记录 (e.g., Winston) 和分布式追踪 (e.g., Jaeger/Zipkin)。",
+        "实现健康检查端点，便于服务监控和管理。",
+        "使用API Gateway (e.g., Nginx or dedicated solutions like Kong/Ocelot) 统一入口和管理跨域请求。",
+        "应用六边形架构（端口和适配器）分离业务逻辑与基础设施依赖。",
+      ],
+    },
   ];
 
   // Generate categories from config
@@ -440,7 +587,10 @@ export const useTechStackStore = defineStore("techStack", () => {
         category === "前端框架" ||
         category === "语言" ||
         category === "UI框架/库" ||
-        category === "数据库",
+        category === "数据库" ||
+        category === "后端技术" || // Keep backend open
+        category === "DevOps工具" || // Keep DevOps open
+        category === "Web服务器", // Keep Web Servers open
     }));
   };
 

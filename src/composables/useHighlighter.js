@@ -239,8 +239,6 @@ export function useHighlighter() {
   // 转义HTML特殊字符
   const escapeHtml = (str) => {
     if (!str) return "";
-
-    return str;
     return str
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
@@ -256,91 +254,105 @@ export function useHighlighter() {
     // 获取当前主题颜色
     const colors = getThemeColors();
 
-    // 转义HTML特殊字符
-    let highlighted = escapeHtml(code);
+    // 转义HTML特殊字符 (一次即可)
+    const escapedCode = escapeHtml(code);
 
-    // 高亮注释（优先处理，避免干扰其他规则）
-    highlighted = highlighted.replace(
-      commentRegex,
-      (match) => `<span style="color: ${colors.comment}">${match}</span>`
-    );
+    const lines = escapedCode.split('\n');
+    let highlightedLines = [];
 
-    // 高亮字符串
-    if (
-      language === "javascript" ||
-      language === "python" ||
-      language === "html" ||
-      language === "css" ||
-      language === "vue"
-    ) {
-      highlighted = highlighted.replace(
-        stringRegex,
-        (match) => `<span style="color: ${colors.string}">${match}</span>`
+    lines.forEach((lineContent) => {
+      let highlightedLine = lineContent;
+      // 高亮注释（优先处理，避免干扰其他规则）
+      highlightedLine = highlightedLine.replace(
+        commentRegex,
+        (match) => `<span style="color: ${colors.comment}">${match}</span>`
       );
-    } else {
-      // 对于可能有多行字符串的语言使用不同的正则
-      highlighted = highlighted.replace(
-        multiLineStringRegex,
-        (match) => `<span style="color: ${colors.string}">${match}</span>`
-      );
-    }
 
-    // 高亮数字
-    highlighted = highlighted.replace(
-      numberRegex,
-      (match, p1) => `<span style="color: ${colors.number}">${p1}</span>`
-    );
-
-    // 高亮函数调用
-    highlighted = highlighted.replace(
-      functionRegex,
-      (match, p1) => `<span style="color: ${colors.function}">${p1}</span>(`
-    );
-
-    // 处理HTML标签和属性
-    if (language === "html" || language === "vue") {
-      highlighted = highlighted.replace(
-        htmlTagRegex,
-        (match) => `<span style="color: ${colors.tag}">${match}</span>`
-      );
-      highlighted = highlighted.replace(
-        htmlAttrRegex,
-        (match, p1) => ` <span style="color: ${colors.attribute}">${p1}</span>=`
-      );
-    }
-
-    // 高亮操作符
-    highlighted = highlighted.replace(
-      operatorsRegex,
-      (match, p1) => `<span style="color: ${colors.operator}">${p1}</span>`
-    );
-
-    // 根据语言高亮关键词
-    const keywordsToUse = [];
-    if (language) {
-      // 添加语言特定的关键词
-      if (languageKeywords[language.toLowerCase()]) {
-        keywordsToUse.push(...languageKeywords[language.toLowerCase()]);
+      // 高亮字符串
+      if (
+        language === "javascript" ||
+        language === "python" ||
+        language === "html" ||
+        language === "css" ||
+        language === "vue"
+      ) {
+        highlightedLine = highlightedLine.replace(
+          stringRegex,
+          (match) => `<span style="color: ${colors.string}">${match}</span>`
+        );
+      } else {
+        // 对于可能有多行字符串的语言使用不同的正则 (注意: 这个逻辑在逐行处理时可能需要调整)
+        // For now, assume strings don't span lines in this simplified line-by-line approach
+        highlightedLine = highlightedLine.replace(
+          stringRegex, // Using stringRegex as multiLineStringRegex might capture too much in a single line
+          (match) => `<span style="color: ${colors.string}">${match}</span>`
+        );
       }
 
-      // 对于Vue文件，也要添加JavaScript的关键词
-      if (language === "vue") {
-        keywordsToUse.push(...languageKeywords["javascript"]);
-      }
-    }
-
-    // 应用关键词高亮
-    keywordsToUse.forEach((keyword) => {
-      // 使用\b确保只匹配单词边界
-      const regex = new RegExp(`\\b(${keyword})\\b`, "g");
-      highlighted = highlighted.replace(
-        regex,
-        (match, p1) => `<span style="color: ${colors.keyword}">${p1}</span>`
+      // 高亮数字
+      highlightedLine = highlightedLine.replace(
+        numberRegex,
+        (match, p1) => `<span style="color: ${colors.number}">${p1}</span>`
       );
+
+      // 高亮函数调用
+      highlightedLine = highlightedLine.replace(
+        functionRegex,
+        (match, p1) => `<span style="color: ${colors.function}">${p1}</span>(`
+      );
+
+      // 处理HTML标签和属性
+      if (language === "html" || language === "vue") {
+        highlightedLine = highlightedLine.replace(
+          htmlTagRegex,
+          (match) => `<span style="color: ${colors.tag}">${match}</span>`
+        );
+        highlightedLine = highlightedLine.replace(
+          htmlAttrRegex,
+          (match, p1) => ` <span style="color: ${colors.attribute}">${p1}</span>=`
+        );
+      }
+
+      // 高亮操作符
+      highlightedLine = highlightedLine.replace(
+        operatorsRegex,
+        (match, p1) => `<span style="color: ${colors.operator}">${p1}</span>`
+      );
+
+      // 根据语言高亮关键词
+      const keywordsToUse = [];
+      if (language) {
+        if (languageKeywords[language.toLowerCase()]) {
+          keywordsToUse.push(...languageKeywords[language.toLowerCase()]);
+        }
+        if (language === "vue") {
+          keywordsToUse.push(...languageKeywords["javascript"]); // Also highlight JS in Vue
+        }
+      }
+
+      keywordsToUse.forEach((keyword) => {
+        const regex = new RegExp(`\\b(${keyword})\\b`, "g");
+        highlightedLine = highlightedLine.replace(
+          regex,
+          (match, p1) => `<span style="color: ${colors.keyword}">${p1}</span>`
+        );
+      });
+      highlightedLines.push(highlightedLine);
     });
 
-    // 使用pre标签包裹，保持格式
-    return `<pre class="code-highlight" style="background-color: ${colors.background}; color: ${colors.foreground}; padding: 1em; border-radius: 4px; overflow-x: auto; line-height: 1.5; font-family: 'Fira Code', Consolas, 'Courier New', monospace;">${highlighted}</pre>`;
+    // 构建带行号的HTML输出
+    let finalHtml = `<pre class="code-highlight" style="background-color: ${colors.background}; color: ${colors.foreground}; padding: 1em; border-radius: 4px; overflow-x: auto; line-height: 1.5; font-family: 'Fira Code', Consolas, 'Courier New', monospace;">`;
+    finalHtml += '<table class="w-full code-table"><tbody>';
+    highlightedLines.forEach((line, index) => {
+      finalHtml += `<tr>
+        <td class="text-right pr-3 select-none text-gray-500 dark:text-gray-400 border-r border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 w-[50px] px-2 sticky left-0">
+          ${index + 1}
+        </td>
+        <td class="pl-4 whitespace-pre">${line}</td>
+      </tr>`;
+    });
+    finalHtml += '</tbody></table></pre>';
+    return finalHtml;
   };
 
   // Markdown简易高亮

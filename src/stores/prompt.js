@@ -9,6 +9,7 @@ export const usePromptStore = defineStore("prompt", () => {
     selectedTechs: [],
     projectTheme: "dark",
     requirements: "",
+    customPromptSections: "", // Added for user-defined sections
   });
 
   const generatedPrompt = ref("");
@@ -218,6 +219,7 @@ export const usePromptStore = defineStore("prompt", () => {
       hasNextJs: hasNextJs,
       designStyle: info.designStyle || "",
       designDescription: info.themeDescription || "",
+      customSections: info.customPromptSections || "", // Added custom sections
     };
 
     // 从templates store获取当前模板并填充变量
@@ -241,6 +243,7 @@ export const usePromptStore = defineStore("prompt", () => {
       bestPractices: info.bestPractices || [],
       rule: formattedRules,
       isMvpMode: info.isMvpMode || false,
+      customPromptSections: info.customPromptSections || "", // Persist custom sections
     };
 
     // Add to history
