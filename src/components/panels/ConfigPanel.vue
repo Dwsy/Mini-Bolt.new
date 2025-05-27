@@ -11,7 +11,8 @@ import StepProgressBar from "../config-panel/StepProgressBar.vue";
 import ProjectBasicInfo from "../config-panel/ProjectBasicInfo.vue";
 import TechStackSelector from "../config-panel/TechStackSelector.vue";
 import RequirementsInput from "../config-panel/RequirementsInput.vue";
-import DesignStyleSelector from "../config-panel/DesignStyleSelector.vue";
+// import DesignStyleSelector from "../config-panel/DesignStyleSelector.vue"; // Commented out old selector
+import AdvancedDesignSelector from "../config-panel/AdvancedDesignSelector.vue"; // Added new selector
 import StepNavigationButtons from "../config-panel/StepNavigationButtons.vue";
 
 const promptStore = usePromptStore();
@@ -168,11 +169,14 @@ const themeDescription = computed(() => {
       />
 
       <!-- 步骤4: 设计风格选择 -->
-      <DesignStyleSelector
+      <!-- <DesignStyleSelector
         v-if="stepControl.currentStep === 4"
         :designPrompts="designPrompts"
         v-model:selectedDesignPrompt="selectedDesignPrompt"
         v-model:customThemeDescription="customThemeDescription"
+      /> -->
+      <AdvancedDesignSelector
+        v-if="stepControl.currentStep === 4"
       />
     </div>
 
