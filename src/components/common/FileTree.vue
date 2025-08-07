@@ -1,23 +1,29 @@
 <script setup>
-import { useFileUtils } from "@/composables/useFileUtils";
-import { provide } from "vue";
+import { watch, onMounted } from "vue";
 import FileTreeItem from "./FileTreeItem.vue";
+import { useWebContainerFS } from "@/composables/useWebContainerFS.js";
 
 const emit = defineEmits(["select-file"]);
 
 const props = defineProps({
-  fileTree: {
-    type: Array,
-    required: true,
-  },
-  rootName: {
-    type: String,
+  webcontainerInstance: {
+    type: Object,
     required: true,
   },
 });
 
-const { getFileIconUrl } = useFileUtils();
-provide("getFileIconUrl", getFileIconUrl);
+const { fileTree, buildFileTree } = useWebContainerFS(props.webcontainerInstance);
+
+watch(() => props.webcontainerInstance, (newInstance) => {
+  if (newInstance) {
+    buildFileTree();
+  }
+});
+
+onMounted(() => {
+  buildFileTree();
+});
+
 
 const selectFile = (filePath) => {
   emit("select-file", filePath);
@@ -39,7 +45,7 @@ const selectFile = (filePath) => {
               d="M20 5h-8.586l-2-2H4c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h16c1.103 0 2-.897 2-2V7c0-1.103-.897-2-2-2z"
             ></path>
           </svg>
-          <span>{{ rootName }}</span>
+          <span>project</span>
         </div>
 
         <!-- 递归组件开始 -->

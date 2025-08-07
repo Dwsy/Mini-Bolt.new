@@ -1,5 +1,4 @@
 <script setup>
-import { inject } from "vue";
 import FileTreeItem from "./FileTreeItem.vue";
 
 defineProps({
@@ -10,7 +9,6 @@ defineProps({
 });
 
 const emit = defineEmits(["select-file"]);
-const getFileIconUrl = inject("getFileIconUrl");
 
 const handleSelectFile = (filePath) => {
   emit("select-file", filePath);
